@@ -1,0 +1,1 @@
+/usr/bin/g++ -g CMakeFiles/assignment01.dir/assignment01/assignment.cc.o CMakeFiles/assignment01.dir/assignment01/assignment_solution.cc.o CMakeFiles/assignment01.dir/assignment01/main.cc.o CMakeFiles/assignment01.dir/common/common.cc.o -o assignment01  extern/glfw/src/libglfw3.a extern/glad/libglad.a /usr/lib/x86_64-linux-gnu/librt.a -lm -ldl /usr/lib/x86_64-linux-gnu/libX11.so 

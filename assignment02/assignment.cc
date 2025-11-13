@@ -63,33 +63,33 @@ void task::drawScene(int scene, float runTime) {
 
 	// (b) stand for the spectators: translation and scaling
 	drawCircle(lightgray, translate(-0.95, 0) * scale(0.04, 0.6));
-
+	
 	// (c) start / finish line: translation and scaling
 	float t = -0.875;
 	for (int i = 0; i < 9; i++) {
 		drawCircle(white, translate(t, 0) * scale(0.005, 0.03));
 		t += 0.02;
 	}
-
+	
 	// (d) white dotted line: translation, rotation and scaling
 	const float r = 0.79;
 	for (int i = 0; i < 30; i++) {
 		float alpha = (i+0.5) * (12*pi/180);
 		drawCircle(white, translate(r*cos(alpha), r * sin(alpha)) * rotate(alpha) * scale(0.01, 0.03));
 	}
-
+	
 	// (e) two race cars: translation, rotation and scaling
 
 	// draw the cars
-	const float r1 = 0.74;
-	const float r2 = 0.84;
+	const float r1 = -0.74;
+	const float r2 = -0.84;
 	float alphay = runTime * 100 * pi / 180;
 	float alphag = runTime * 200 * pi / 180;
 
 	// let's goooo
 	drawCircle(yellow, translate(r1*cos(alphay), r1*sin(alphay)) * rotate(alphay) * scale(0.02, 0.1));
 	drawCircle(green, translate(r2 * cos(alphag), r2 * sin(alphag)) * rotate(alphag) * scale(0.02, 0.1));
-
+	
 }
 
 

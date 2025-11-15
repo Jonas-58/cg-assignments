@@ -194,6 +194,20 @@ glm::mat4 buildFrustum(float phiInDegree, float aspectRatio, float near, float f
     // buildFrustum function for programming exercise part b:
     // Add your code here:
     // ====================================================================
+    const float pi = 3.141593;
+    auto const phiInRadians = phiInDegree / 180 * pi;
+
+    auto const t = near * tan(phiInRadians / 2);
+    auto const b = -near * tan(phiInRadians / 2);
+    auto const l = -t * aspectRatio;
+    auto const r = t * aspectRatio;
+
+    fm = glm::mat4(
+        2 * near/(r-l), 0, 0, 0,
+        0, 2 * near/(t-b), 0, 0,
+        (r+l)/(r-l), (t+b)/(t-b), (-far-near)/(far-near), -1,
+        0, 0, -(2*far*near)/(far-near), 0
+    );
 
     // ====================================================================
     // End Exercise code
@@ -208,25 +222,26 @@ glm::mat4 lookAt(const glm::vec3& camPos, const glm::vec3& viewDirection, const 
     // Lookat for programming exercise part a:
     // Add your code here:
     // ====================================================================
-    const glm::vec3 d = viewDirection;
-    const glm::vec3 u = up;
+    auto const d = viewDirection;
+    auto const u = up;
 
     auto const r       = glm::vec3(d[1] * u[2] - d[2] * u[1], d[2] * u[0] - d[0] * u[2], d[0] * u[1] - d[1] * u[0]);
     auto const u_prime = glm::vec3(r[1] * d[2] - r[2] * d[1], r[2] * d[0] - r[0] * d[2], r[0] * d[1] - r[1] * d[0]);
 
-    float d_length = glm::sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
-    float r_length = glm::sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2]);
-    float u_prime_length = glm::sqrt(u_prime[0] * u_prime[0] + u_prime[1] * u_prime[1] + u_prime[2] * u_prime[2]);
+    auto const d_length = glm::sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
+    auto const r_length = glm::sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2]);
+    auto const u_prime_length = glm::sqrt(u_prime[0] * u_prime[0] + u_prime[1] * u_prime[1] + u_prime[2] * u_prime[2]);
 
     auto const d_normalized = glm::vec3(d[0] / d_length, d[1] / d_length, d[2] / d_length);
     auto const r_normalized = glm::vec3(r[0] / r_length, r[1] / r_length, r[2] / r_length);
     auto const u_prime_normalized = glm::vec3(u_prime[0] / u_prime_length, u_prime[1] / u_prime_length, u_prime[2] / u_prime_length);
 
     // rotation matrix:
+    // transposed, aka inverse B_c
     auto const R = glm::mat4(
-        r_normalized[0], r_normalized[1], r_normalized[2], 0,
-        u_prime_normalized[0], u_prime_normalized[1], u_prime_normalized[2], 0,
-        -d_normalized[0], -d_normalized[1], -d_normalized[2], 0,
+        r_normalized[0], u_prime_normalized[0], -d_normalized[0], 0,
+        r_normalized[1], u_prime_normalized[1], -d_normalized[1], 0,
+        r_normalized[2], u_prime_normalized[2], -d_normalized[2], 0,
         0, 0, 0, 1
     );
 
@@ -240,7 +255,9 @@ glm::mat4 lookAt(const glm::vec3& camPos, const glm::vec3& viewDirection, const 
 
     // multiply translation and rotation matrices
 
-    return R * T;
+    auto const M = R * T;
+
+    return M;
 
     // ====================================================================
     // End Exercise code
@@ -259,6 +276,10 @@ void task::resizeCallback(int newWidth, int newHeight)
     // Add your code here:
     // ====================================================================
 
+    // 0.5 would be fine
+    // 0.01 for (e) is preferable
+    projectionMatrix = buildFrustum(90, float(newWidth) / newHeight, 0.01, 50);
+
     // ====================================================================
     // End Exercise code
     // ====================================================================
@@ -275,6 +296,8 @@ void task::drawScene(int scene, float runTime)
         // Add your code here:
         // =====================================================
 
+        auto const pos = glm::vec3(0, -1, 1);
+        viewMatrix = lookAt(pos, glm::vec3(0, 0, 0) - pos, glm::vec3(0, 0, 1));
 
         // =====================================================
         // End Exercise code
@@ -297,6 +320,19 @@ void task::drawScene(int scene, float runTime)
         // Add your code here:
         // =====================================================
 
+        // finite differences to get proper direction vector
+        auto const r = -0.85;
+        auto const x = r * std::cos(angle1);
+        auto const y = r * std::sin(angle1);
+        auto const x2 = r * std::cos(angle1 - 0.01);
+        auto const y2 = r * std::sin(angle1 - 0.01);
+        auto const height2 = -std::sin((angle1 - 0.01) * 2.0) * 0.1;
+
+        // + 0.1 because 100% on-lane is ugly
+        auto const pos = glm::vec3(x, y, height + 0.1);
+        auto const pos2 = glm::vec3(x2, y2, height2 + 0.1);
+
+        viewMatrix = lookAt(pos, pos2 - pos, glm::vec3(0, 0, 1));
 
         // =====================================================
         // End Exercise code

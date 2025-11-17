@@ -94,18 +94,6 @@ glm::mat4 getRotationMatrixYAxis(float angle)
     return r;
 }
 
-glm::mat4 getRotationMatrixXAxis(float angle)
-{
-    glm::mat4 r(1.f);
-    r[0][0] = 1.0;
-    r[1][1] = std::cos(angle);
-    r[2][1] = -std::sin(angle);
-    r[1][2] = std::sin(angle);
-    r[2][2] = std::cos(angle);
-    r[3][3] = 1.0;
-    return r;
-}
-
 /*
  * A white circle represents the track center line
  */
@@ -288,6 +276,7 @@ glm::mat4 lookAt(const glm::vec3& camPos, const glm::vec3& viewDirection, const 
     // Lookat for programming exercise part a:
     // Add your code here:
     // ====================================================================
+
     glm::mat4 lookAtTransform(0.f);
 
     //translation to origin
@@ -297,7 +286,7 @@ glm::mat4 lookAt(const glm::vec3& camPos, const glm::vec3& viewDirection, const 
         translationOrigin[3][i] = -camPos[i];
     }
 
-    //orthonormal frame
+    //orthonormal basis
     glm::vec3 right = helper::crossProduct(viewDirection, up);
     right = helper::normalize(right);
 
@@ -334,10 +323,10 @@ void task::resizeCallback(int newWidth, int newHeight)
     // Add your code here:
     // ====================================================================
 
-    float phiInDegree = 90;
-    float aspectRatio = (float)newWidth/(float)newHeight;
-    float near = 0.5;
-    float far = 50.0;
+    const float phiInDegree = 90;
+    const float aspectRatio = (float)newWidth/(float)newHeight;
+    const float near = 0.01;
+    const float far = 50.0;
     projectionMatrix = buildFrustum(phiInDegree, aspectRatio, near, far);
 
     // ====================================================================
@@ -348,7 +337,6 @@ void task::resizeCallback(int newWidth, int newHeight)
 void task::drawScene(int scene, float runTime)
 {
     float angle1 = -2.0f * M_PI * runTime / 60.0f;
-
     if (scene != 4)
     {
         // =====================================================
@@ -381,7 +369,12 @@ void task::drawScene(int scene, float runTime)
         // Moving camera for programming exercise part e:
         // Add your code here:
         // =====================================================
-
+        float r = 0.9;
+        glm::vec3 camPos(r*cos(angle1),r*sin(angle1),height+0.03);
+        glm::vec3 camNormal = cross(glm::vec3(0,0,-1),camPos);
+        glm::vec3 viewDirection = camNormal - camPos;
+        glm::vec3 up(0,0,1);
+        viewMatrix = lookAt(camPos,viewDirection,up);
 
         // =====================================================
         // End Exercise code

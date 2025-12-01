@@ -7,4 +7,7 @@
 #
 # If this file is malformatted, the assignment will not be graded at all.
 
-123456 John Doe
+331573 Jonas Dicke
+421979 Tasja Arriens
+305817 Walter Schikowski
+422698 Jonas Koerhuis

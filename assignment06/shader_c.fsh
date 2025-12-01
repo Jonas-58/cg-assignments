@@ -38,10 +38,10 @@ void main() {
     
     // specular
     vec3 viewDirection = normalize(vec3(0, 0, 0) - vec3(vPosition));
-    vec3 h = normalize(lightDirection + viewDirection);
-    float cosAngleSp = max(dot(N, h), 0);
+    vec3 r = 2.0 * N * dot(N, lightDirection) - lightDirection;
+    float rvl = max(dot(r, viewDirection), 0.0);
     
-    vec3 specular = uSpecularMaterial * uLightColor * pow(cosAngleSp, uSpecularityExponent);
+    vec3 specular = uSpecularMaterial * uLightColor * pow(rvl, uSpecularityExponent);
 
 	// color
 	vec3 color = ambient + spot * (diffuse + specular);

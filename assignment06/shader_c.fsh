@@ -40,7 +40,7 @@ void main() {
     vec4 globalOrigin = uModelViewMatrix * vec4(0,0,0,1.0);
     vec3 D = normalize(vec3(globalOrigin) - uLightPosition);
 
-    // if spotlight on backside we can return
+    // if spotlight pointing away we can return
     float DdotL = dot(D,-L);
     if(DdotL <= 0.0) {
         oFragColor = vec4(aAmbientTerm, 1.0);
